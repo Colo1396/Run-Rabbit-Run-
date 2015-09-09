@@ -13,7 +13,7 @@ tx = 0
 tz = 0
 vx=250
 vy=250
-
+NIVEL=0
 
 
 
@@ -465,6 +465,170 @@ def probConejo():
             
         conejo= Enemigo(posX,posY) # creo el conejo, en la pocicion q salio
         listaConejo.append(conejo) # lo agrego a la lista de conejos
+
+def Menu():
+    pygame.init ()
+
+    #variables globales
+    ancho = 1024
+    alto = 768
+    global NIVEL
+    colisiono=False
+    colisionPlay=False
+    colisionTuto=False
+    colisionPuntaje=False
+    colisionBack=False
+    posX=1
+    posY=1
+    #cargo los fondos
+    FMenu=pygame.image.load("imagenes/fondo menu.jpg")
+    FTuto=pygame.image.load("imagenes/enPausa.jpg")
+    FPlay=pygame.image.load("imagenes/fondo play.jpg")
+    FPuntaje=pygame.image.load("imagenes/puntajes2.jpg")
+    
+    #cargo foto puntero
+    puntero=pygame.image.load("imagenes/arma0001.png")
+    #tomo el area del puntero con las posiciones del mouse X e Y
+    AreaPuntero=puntero.get_rect()
+    AreaPuntero.left = posX
+    AreaPuntero.top = posY
+    
+    #creo la ventana
+    ventana =pygame.display.set_mode((ancho,alto)) #objeto ventana, set mode superficie
+    pygame.display.set_caption("Conejolandia") #set caption mensaje a la superficie
+    #crear texto mediente font (fuente, 
+    #render recive como primer parametro el texto que nosotros queremos colocar,el segundo un antialias,el tercero un color
+    #cuarto parametro color de fondo al texto
+    #recibir fuente del sistema SysFont! con el metodo render (aplica el texto con la fuente
+
+    #*Creo las Palabras*
+    miFuenteSistema=pygame.font.SysFont("JOkerman",30)
+    txtPlay=miFuenteSistema.render("Play",0,(0,0,0),(255,153,0))
+    txtTuto=miFuenteSistema.render("Tutorial",0,(0,0,0),(255,153,0))
+    txtArma=miFuenteSistema.render("Cambio de Arma",0,(0,0,0),(255,153,0))
+    txtPuntaje=miFuenteSistema.render("Puntajes",0,(0,0,0),(255,153,0))
+    txtBack=miFuenteSistema.render("Back",0,(0,0,0),(255,153,0))
+
+    #Cargo las imagenes de los menus y le pongo sus posiciones
+    menuPlay=pygame.image.load("imagenes/play.jpg")
+    AreaPlay=menuPlay.get_rect()
+    AreaPlay.left = 150
+    AreaPlay.top = 133
+
+    menuTuto=pygame.image.load("imagenes/tuto.jpg")
+    AreaTuto=menuTuto.get_rect()
+    AreaTuto.left=650
+    AreaTuto.top=54
+    
+    menuArma=pygame.image.load("imagenes/armas.jpg")
+    AreaArma=menuArma.get_rect()
+    AreaArma.left=100
+    AreaArma.top=370
+    
+    menuPuntaje=pygame.image.load("imagenes/puntajes.jpg")
+    AreaPuntaje=menuPuntaje.get_rect()
+    AreaPuntaje.left=375#650
+    AreaPuntaje.top=572#370
+
+    menuBack=pygame.image.load("imagenes/back.jpg")
+    AreaBack=menuBack.get_rect()
+    AreaBack.left = 650
+    AreaBack.top = 369
+
+
+    while True:
+        if NIVEL==0:            
+            if colisiono==False:
+                ventana.blit(FMenu,(0,0))
+                ventana.blit(menuPlay,(150,133))#(imagen, x,y)
+                ventana.blit(txtPlay,(180,260))
+                
+                ventana.blit(menuTuto,(700,133))
+                
+                ventana.blit(txtTuto,(715,260))
+                
+                ventana.blit(menuArma,(150,450))
+                ventana.blit(txtArma,(120,577))
+                    
+                ventana.blit(menuPuntaje,(375,572))
+                ventana.blit(txtPuntaje,(400,590))
+            #ventana.blit(puntero,(posX,posY))
+    
+            
+            for evento in pygame.event.get():
+                ventana.blit(puntero,(posX,posY))    
+                if evento.type == QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif evento.type==MOUSEBUTTONDOWN:
+#******************* \\\\PLAY/// ************************
+                    if AreaPlay.colliderect(AreaPuntero):
+                        print"colisiono con play"
+                        colisiono=True
+                        colisionPlay=True
+                        if colisionPlay==True:
+                            NIVEL=1
+                            return
+                            
+                    else:
+                        print "no colisiono con play"
+#*******************\\\TUTOTIRAL////***************
+                    if AreaTuto.colliderect(AreaPuntero):
+                        print"colisiono con Tuto"
+                        colisiono=True
+                        colisionTuto=True
+                        if colisionTuto==True:
+                            #NIVEL=10
+                            ventana.blit(FTuto,(0,0))
+                            ventana.blit(menuBack,(700,450))
+                            ventana.blit(txtBack,(715,577))
+                            MenuPausa()
+                            
+                        else:
+                            print "no colisiono con tuto"
+                            
+                    if AreaBack.colliderect(AreaPuntero):
+                        print"colisiono BACK"
+                        colisiono=False
+                        colisionTuto=False
+                        NIVEL=0
+                    else:
+                        print "no colisiono BACK"
+#**************\\\PUNTAJE///****************
+                    if AreaPuntaje.colliderect(AreaPuntero):
+                        print"colisiono con puntaje"
+                        colisiono=True
+                        colisionPuntaje=True
+                        if colisionPuntaje==True:
+                            #suponiendo q es una imagen
+                            #NIVEL=11
+                            ventana.blit(FPuntaje,(0,0))
+                            
+                            ventana.blit(menuBack,(700,450))
+                            ventana.blit(txtBack,(715,577))
+                            
+                    else:
+                        print "no colisiono con puntaje"
+                    if AreaBack.colliderect(AreaPuntero):
+                        print"colisiono BACK"
+                        colisiono=False
+                        colisionPuntaje=False
+                        NIVEL=0
+                    else:
+                        print "no colisiono BACK"    
+                        
+
+            ventana.blit(puntero,(posX,posY))
+            posX,posY=pygame.mouse.get_pos()
+            posX=posX-50
+            posY=posY-80
+            print posX,posY
+            AreaPuntero.left = posX
+            AreaPuntero.top = posY
+                
+            pygame.display.update()    
+        
+
         
 
 
@@ -505,354 +669,360 @@ def main():
     objBarra=Barra()
     objBarra.dibujarRectangulo()
     while salir!=True:#LOOP PRINCIPAL
-        score.dibujarScore(ventana)
-        ventana.blit(fondo,(0,0))
-        score.dibujarScore(ventana)
-        objBarra.dibujarBarra(ventana)
-        objBarra.dibujarRectangulo()
-
-
-################################################################################
-        ################################################
-        # COLISIONES AUXILIARES #
-
-        
-        
-        
-
-        #COLISIONES PARA NO CAMINAR POR EL PASTO
-        pygame.draw.rect(ventana,color,player1.rectcolcon)
-        pygame.draw.rect(ventana,color,(112,250,45,30)) #RectanguloAuxYUYO1 BORRAR DESPUES
-        if player1.rectcoli.colliderect(112,250,45,30):
-            print "hola"
-           #player1.choca=True
-    
-        pygame.draw.rect(ventana,color,(210,400,50,27)) #2
-        if player1.rectcoli.colliderect(210,400,50,27):
-            print "auch"
-            
-        pygame.draw.rect(ventana,color,(115,605,45,30))#3
-        if player1.rectcoli.colliderect(115,605,45,30):
-            print "auch"
-        
-        pygame.draw.rect(ventana,color,(415,303,45,30))
-        if player1.rectcoli.colliderect(415,303,45,30):
-            print "auch"
-
-        pygame.draw.rect(ventana,color,(415,603,45,30))#5
-        if player1.rectcoli.colliderect(415,603,45,30):
-            print "auch"
-
-        pygame.draw.rect(ventana,color,(512,452,45,30))
-        if player1.rectcoli.colliderect(512,452,45,30):
-            print "auch"
-
-        pygame.draw.rect(ventana,color,(815,350,45,30))
-        if player1.rectcoli.colliderect(815,350,45,30):#7
-            print "auch"
-
-        pygame.draw.rect(ventana,color,(690,255,47,25))
-        if player1.rectcoli.colliderect(690,255,47,25):
-            print "auch"
-
-        pygame.draw.rect(ventana,color,(710,600,47,25))
-        if player1.rectcoli.colliderect(710,600,47,25):#9
-            print "auch"
-
-        pygame.draw.rect(ventana,color,(910,500,47,25))
-        if player1.rectcoli.colliderect(910,500,47,25):
-            print "auch"
-
-####################################################################################################################
-        #COLISIONES PUNTERIA DERECHA
-        punteria = False
-        if player1.rectcolcon.colliderect(112,250,45,30):
-            punteria=True
-            if punteria == True and golpe==True and player1.orientacion==1 and conejo.cone1==True:
-                print "GOLPE ACERTADO"
-                score.aumentarScore()
-                #ACA VA EL CAMBIO DE IMAGENES POR UN GOLPE
-                conejo.cone1=False
-
-        if player1.rectcolcon.colliderect(210,400,50,27):
-            punteria=True
-            if punteria == True and golpe == True and player1.orientacion==1 and conejo.cone2==True:
-                print "GOLPE ACERTADO"
-                score.aumentarScore()
-                conejo.cone2=False
-        if player1.rectcolcon.colliderect(115,605,45,30):
-            punteria=True
-            if punteria == True and golpe == True and player1.orientacion==1 and conejo.cone3==True:
-                print "GOLPE ACERTADO"
-                score.aumentarScore()
-                conejo.cone3=False
-        if player1.rectcolcon.colliderect(415,303,45,30):
-            punteria=True
-            if punteria == True and golpe == True and player1.orientacion==1 and conejo.cone4==True:
-                print "GOLPE ACERTADO"
-                score.aumentarScore()
-                conejo.cone4=False
-        if player1.rectcolcon.colliderect(415,603,45,30):
-            punteria=True
-            if punteria == True and golpe == True and player1.orientacion==1 and conejo.cone5==True:
-                print "GOLPE ACERTADO"
-                score.aumentarScore()
-                conejo.cone5=False
-        if player1.rectcolcon.colliderect(512,452,45,30):
-            punteria=True
-            if punteria == True and golpe == True and player1.orientacion==1 and conejo.cone6==True:
-                print "GOLPE ACERTADO"
-                score.aumentarScore()
-                conejo.cone6=False
-        if player1.rectcolcon.colliderect(815,350,45,30):
-            punteri=True
-            if punteria == True and golpe == True and player1.orientacion==1 and conejo.cone7==True:
-                print "GOLPE ACERTADO"
-                score.aumentarScore()
-                conejo.cone7=False
-        if player1.rectcolcon.colliderect(690,255,47,25):
-            punteria=True
-            if punteria == True and golpe == True and player1.orientacion==1 and conejo.cone8==True:
-                print "GOLPE ACERTADO"
-                score.aumentarScore()
-                conejo.cone8=False
-        if player1.rectcolcon.colliderect(710,600,47,25):
-            punteria=True
-            if punteria == True and golpe == True and player1.orientacion==1 and conejo.cone9==True:
-                print "GOLPE ACERTADO"
-                score.aumentarScore()
-                conejo.cone9=False
-        if player1.rectcolcon.colliderect(910,500,47,25):
-            punteria=True
-            if punteria == True and golpe == True and player1.orientacion==1 and conejo.cone10==True:
-                print "GOLPE ACERTADO"
-                score.aumentarScore()
-                conejo.cone10=False
-###################################################################################################################
-        #COLISIONES PUNTERIA IZQUIERDA
-
-        if player1.rectcolcon2.colliderect(112,250,45,30):
-            punteria=True
-            if punteria == True and golpe == True and player1.orientacion==0 and conejo.cone1==True:
-                print "GOLPE ACERTADO"
-                score.aumentarScore()
-                conejo.cone1=False
-        if player1.rectcolcon2.colliderect(210,400,50,27):
-            punteria=True
-            if punteria == True and golpe == True and player1.orientacion==0 and conejo.cone2==True:
-                print "GOLPE ACERTADO"
-                score.aumentarScore()
-                conejo.cone2=False
-        if player1.rectcolcon2.colliderect(115,605,45,30):
-            punteria=True
-            if punteria == True and golpe == True and player1.orientacion==0 and conejo.cone3==True:
-                print "GOLPE ACERTADO"
-                score.aumentarScore()
-                conejo.cone3=False
-        if player1.rectcolcon2.colliderect(415,303,45,30):
-            punteria=True
-            if punteria == True and golpe == True and player1.orientacion==0 and conejo.cone4==True:
-                print "GOLPE ACERTADO"
-                score.aumentarScore()
-                conejo.cone4=False
-        if player1.rectcolcon2.colliderect(415,603,45,30):
-            punteria=True
-            if punteria == True and golpe == True and player1.orientacion==0 and conejo.cone5==True:
-                print "GOLPE ACERTADO"
-                score.aumentarScore()
-                conejo.cone5=False
-        if player1.rectcolcon2.colliderect(512,452,45,30):
-            punteria=True
-            if punteria == True and golpe == True and player1.orientacion==0 and conejo.cone6==True:
-                print "GOLPE ACERTADO"
-                score.aumentarScore()
-                conejo.cone6=False
-        if player1.rectcolcon2.colliderect(815,350,45,30):
-            punteria=True
-            if punteria == True and golpe == True and player1.orientacion==0 and conejo.cone7==True:
-                print "GOLPE ACERTADO"
-                score.aumentarScore()
-                conejo.cone7=False
-        if player1.rectcolcon2.colliderect(690,255,47,25):
-            punteria=True
-            if punteria == True and golpe == True and player1.orientacion==0 and conejo.cone8==True:
-                print "GOLPE ACERTADO"
-                score.aumentarScore()
-                conejo.cone8=False
-        if player1.rectcolcon2.colliderect(710,600,47,25):
-            punteria=True
-            if punteria == True and golpe == True and player1.orientacion==0 and conejo.cone9==True:
-                print "GOLPE ACERTADO"
-                score.aumentarScore()
-                conejo.cone9=False
-        if player1.rectcolcon2.colliderect(910,500,47,25):
-            punteria=True
-            if punteria == True and golpe == True and player1.orientacion==0 and conejo.cone10==True:
-                print "GOLPE ACERTADO"
-                score.aumentarScore()
-                conejo.cone10=False
-
-##############################################################################################################################
+        while NIVEL==0:
+            Menu()
+        while NIVEL==1:
                 
-        for event in pygame.event.get():
-            #control de eventos
-            if event.type == pygame.QUIT:
-                salir=True
-            ###PAUSA###
-            if event.type == pygame.KEYDOWN:
-                if event.key==pygame.K_p:
+            score.dibujarScore(ventana)
+            ventana.blit(fondo,(0,0))
+            score.dibujarScore(ventana)
+            objBarra.dibujarBarra(ventana)
+            objBarra.dibujarRectangulo()
+
+
+    ################################################################################
+            ################################################
+            # COLISIONES AUXILIARES #
+
+            
+            
+            
+
+            #COLISIONES PARA NO CAMINAR POR EL PASTO
+            pygame.draw.rect(ventana,color,player1.rectcolcon)
+            pygame.draw.rect(ventana,color,(112,250,45,30)) #RectanguloAuxYUYO1 BORRAR DESPUES
+            if player1.rectcoli.colliderect(112,250,45,30):
+                print "hola"
+               #player1.choca=True
+        
+            pygame.draw.rect(ventana,color,(210,400,50,27)) #2
+            if player1.rectcoli.colliderect(210,400,50,27):
+                print "auch"
+                
+            pygame.draw.rect(ventana,color,(115,605,45,30))#3
+            if player1.rectcoli.colliderect(115,605,45,30):
+                print "auch"
+            
+            pygame.draw.rect(ventana,color,(415,303,45,30))
+            if player1.rectcoli.colliderect(415,303,45,30):
+                print "auch"
+
+            pygame.draw.rect(ventana,color,(415,603,45,30))#5
+            if player1.rectcoli.colliderect(415,603,45,30):
+                print "auch"
+
+            pygame.draw.rect(ventana,color,(512,452,45,30))
+            if player1.rectcoli.colliderect(512,452,45,30):
+                print "auch"
+
+            pygame.draw.rect(ventana,color,(815,350,45,30))
+            if player1.rectcoli.colliderect(815,350,45,30):#7
+                print "auch"
+
+            pygame.draw.rect(ventana,color,(690,255,47,25))
+            if player1.rectcoli.colliderect(690,255,47,25):
+                print "auch"
+
+            pygame.draw.rect(ventana,color,(710,600,47,25))
+            if player1.rectcoli.colliderect(710,600,47,25):#9
+                print "auch"
+
+            pygame.draw.rect(ventana,color,(910,500,47,25))
+            if player1.rectcoli.colliderect(910,500,47,25):
+                print "auch"
+
+    ####################################################################################################################
+            #COLISIONES PUNTERIA DERECHA
+            punteria = False
+            if player1.rectcolcon.colliderect(112,250,45,30):
+                punteria=True
+                if punteria == True and golpe==True and player1.orientacion==1 and conejo.cone1==True:
+                    print "GOLPE ACERTADO"
+                    score.aumentarScore()
+                    #ACA VA EL CAMBIO DE IMAGENES POR UN GOLPE
+                    conejo.cone1=False
+
+            if player1.rectcolcon.colliderect(210,400,50,27):
+                punteria=True
+                if punteria == True and golpe == True and player1.orientacion==1 and conejo.cone2==True:
+                    print "GOLPE ACERTADO"
+                    score.aumentarScore()
+                    conejo.cone2=False
+            if player1.rectcolcon.colliderect(115,605,45,30):
+                punteria=True
+                if punteria == True and golpe == True and player1.orientacion==1 and conejo.cone3==True:
+                    print "GOLPE ACERTADO"
+                    score.aumentarScore()
+                    conejo.cone3=False
+            if player1.rectcolcon.colliderect(415,303,45,30):
+                punteria=True
+                if punteria == True and golpe == True and player1.orientacion==1 and conejo.cone4==True:
+                    print "GOLPE ACERTADO"
+                    score.aumentarScore()
+                    conejo.cone4=False
+            if player1.rectcolcon.colliderect(415,603,45,30):
+                punteria=True
+                if punteria == True and golpe == True and player1.orientacion==1 and conejo.cone5==True:
+                    print "GOLPE ACERTADO"
+                    score.aumentarScore()
+                    conejo.cone5=False
+            if player1.rectcolcon.colliderect(512,452,45,30):
+                punteria=True
+                if punteria == True and golpe == True and player1.orientacion==1 and conejo.cone6==True:
+                    print "GOLPE ACERTADO"
+                    score.aumentarScore()
+                    conejo.cone6=False
+            if player1.rectcolcon.colliderect(815,350,45,30):
+                punteri=True
+                if punteria == True and golpe == True and player1.orientacion==1 and conejo.cone7==True:
+                    print "GOLPE ACERTADO"
+                    score.aumentarScore()
+                    conejo.cone7=False
+            if player1.rectcolcon.colliderect(690,255,47,25):
+                punteria=True
+                if punteria == True and golpe == True and player1.orientacion==1 and conejo.cone8==True:
+                    print "GOLPE ACERTADO"
+                    score.aumentarScore()
+                    conejo.cone8=False
+            if player1.rectcolcon.colliderect(710,600,47,25):
+                punteria=True
+                if punteria == True and golpe == True and player1.orientacion==1 and conejo.cone9==True:
+                    print "GOLPE ACERTADO"
+                    score.aumentarScore()
+                    conejo.cone9=False
+            if player1.rectcolcon.colliderect(910,500,47,25):
+                punteria=True
+                if punteria == True and golpe == True and player1.orientacion==1 and conejo.cone10==True:
+                    print "GOLPE ACERTADO"
+                    score.aumentarScore()
+                    conejo.cone10=False
+    ###################################################################################################################
+            #COLISIONES PUNTERIA IZQUIERDA
+
+            if player1.rectcolcon2.colliderect(112,250,45,30):
+                punteria=True
+                if punteria == True and golpe == True and player1.orientacion==0 and conejo.cone1==True:
+                    print "GOLPE ACERTADO"
+                    score.aumentarScore()
+                    conejo.cone1=False
+            if player1.rectcolcon2.colliderect(210,400,50,27):
+                punteria=True
+                if punteria == True and golpe == True and player1.orientacion==0 and conejo.cone2==True:
+                    print "GOLPE ACERTADO"
+                    score.aumentarScore()
+                    conejo.cone2=False
+            if player1.rectcolcon2.colliderect(115,605,45,30):
+                punteria=True
+                if punteria == True and golpe == True and player1.orientacion==0 and conejo.cone3==True:
+                    print "GOLPE ACERTADO"
+                    score.aumentarScore()
+                    conejo.cone3=False
+            if player1.rectcolcon2.colliderect(415,303,45,30):
+                punteria=True
+                if punteria == True and golpe == True and player1.orientacion==0 and conejo.cone4==True:
+                    print "GOLPE ACERTADO"
+                    score.aumentarScore()
+                    conejo.cone4=False
+            if player1.rectcolcon2.colliderect(415,603,45,30):
+                punteria=True
+                if punteria == True and golpe == True and player1.orientacion==0 and conejo.cone5==True:
+                    print "GOLPE ACERTADO"
+                    score.aumentarScore()
+                    conejo.cone5=False
+            if player1.rectcolcon2.colliderect(512,452,45,30):
+                punteria=True
+                if punteria == True and golpe == True and player1.orientacion==0 and conejo.cone6==True:
+                    print "GOLPE ACERTADO"
+                    score.aumentarScore()
+                    conejo.cone6=False
+            if player1.rectcolcon2.colliderect(815,350,45,30):
+                punteria=True
+                if punteria == True and golpe == True and player1.orientacion==0 and conejo.cone7==True:
+                    print "GOLPE ACERTADO"
+                    score.aumentarScore()
+                    conejo.cone7=False
+            if player1.rectcolcon2.colliderect(690,255,47,25):
+                punteria=True
+                if punteria == True and golpe == True and player1.orientacion==0 and conejo.cone8==True:
+                    print "GOLPE ACERTADO"
+                    score.aumentarScore()
+                    conejo.cone8=False
+            if player1.rectcolcon2.colliderect(710,600,47,25):
+                punteria=True
+                if punteria == True and golpe == True and player1.orientacion==0 and conejo.cone9==True:
+                    print "GOLPE ACERTADO"
+                    score.aumentarScore()
+                    conejo.cone9=False
+            if player1.rectcolcon2.colliderect(910,500,47,25):
+                punteria=True
+                if punteria == True and golpe == True and player1.orientacion==0 and conejo.cone10==True:
+                    print "GOLPE ACERTADO"
+                    score.aumentarScore()
+                    conejo.cone10=False
+
+    ##############################################################################################################################
                     
-                  esperar = True
-                  player1.izquierda=False
-                  player1.derecha=False
-                  player1.arriba=False
-                  player1.abajo=False
-                  player1.correr = False
-                  vx=0
-                  vy=0
-                  pausado = True
-                  if pausado:
-                     ventana2 =pygame.display.set_mode((1000,650))
-                     pausa=pygame.image.load("Imagenes/enPausa.jpg")
-                     ventana2.blit(pausa,(0,0))
-                     pygame.display.update()
-                  while esperar:
-                    """if pausado:
-                       pausa=pygame.image.load("Imagenes/sl.jpg")
-                       ventana.blit(pausa,(0,0))"""
-                    for event in pygame.event.get():
-                          if event.type == pygame.KEYDOWN:
-                              if event.key==pygame.K_p:
-                                  esperar = False
-                                  pausado = False
-                          if event.type == pygame.QUIT:
-                              pygame.quit()
-                              sys.exit()
-
-
-
-
-
-                if event.key == pygame.K_s:
-                    player1.correr = True
-                    print "corre"
-                if event.key == pygame.K_SPACE:
-                    golpe=True
-                    
-                if event.key == pygame.K_LEFT:
-                    player1.izquierda =True
-                if event.key == pygame.K_RIGHT:
-                    player1.derecha=True
-                if event.key== pygame.K_UP:
-                    player1.arriba=True
-                if event.key == pygame.K_DOWN:
-                    player1.abajo =True
-
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_SPACE:
-                    golpe=False
-                if event.key == pygame.K_s:
-                    player1.correr =False
-                if event.key == pygame.K_LEFT:
-                    player1.izquierda =False
-                    if player1.derecha:
-                        vx=velocidad
-                    else:
-                        vx=0
-                if event.key == pygame.K_RIGHT:
-                    player1.derecha=False
-                    if player1.izquierda:vx=-velocidad
-                    else:vx=0
-                if event.key== pygame.K_UP:
-                    player1.arriba=False
-                    if player1.abajo:vy=velocidad
-                    else:vy=-0
-                if event.key == pygame.K_DOWN:
-                    player1.abajo=False
-                    if player1.arriba:
-                        vy=-velocidad
+            for event in pygame.event.get():
+                #control de eventos
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                    #salir=True
+                ###PAUSA###
+                if event.type == pygame.KEYDOWN:
+                    if event.key==pygame.K_p:
                         
-                    else:vy=0
-                   
-        if player1.correr ==True:
-            objBarra.restarBarra()
-            if objBarra.valorx <= 10:
-                cansado = True    
-        if player1.correr ==False:
-            objBarra.sumarBarra()
-            if objBarra.valorx > 10:
-                cansado = False 
-#Boton Izquierda
-        if player1.izquierda == True:
-            if player1.correr == True:
-                if cansado == True:
-                    velocidad = 7
-                if cansado == False:
-                    velocidad = 15
-            else: velocidad = 7
-            vx = - velocidad
+                      esperar = True
+                      player1.izquierda=False
+                      player1.derecha=False
+                      player1.arriba=False
+                      player1.abajo=False
+                      player1.correr = False
+                      vx=0
+                      vy=0
+                      pausado = True
+                      if pausado:
+                         ventana2 =pygame.display.set_mode((1000,650))
+                         pausa=pygame.image.load("Imagenes/enPausa.jpg")
+                         ventana2.blit(pausa,(0,0))
+                         pygame.display.update()
+                      while esperar:
+                        """if pausado:
+                           pausa=pygame.image.load("Imagenes/sl.jpg")
+                           ventana.blit(pausa,(0,0))"""
+                        for event in pygame.event.get():
+                              if event.type == pygame.KEYDOWN:
+                                  if event.key==pygame.K_p:
+                                      esperar = False
+                                      pausado = False
+                              if event.type == pygame.QUIT:
+                                  pygame.quit()
+                                  sys.exit()
+
+
+
+
+
+                    if event.key == pygame.K_s:
+                        player1.correr = True
+                        print "corre"
+                    if event.key == pygame.K_SPACE:
+                        golpe=True
+                        
+                    if event.key == pygame.K_LEFT:
+                        player1.izquierda =True
+                    if event.key == pygame.K_RIGHT:
+                        player1.derecha=True
+                    if event.key== pygame.K_UP:
+                        player1.arriba=True
+                    if event.key == pygame.K_DOWN:
+                        player1.abajo =True
+
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_SPACE:
+                        golpe=False
+                    if event.key == pygame.K_s:
+                        player1.correr =False
+                    if event.key == pygame.K_LEFT:
+                        player1.izquierda =False
+                        if player1.derecha:
+                            vx=velocidad
+                        else:
+                            vx=0
+                    if event.key == pygame.K_RIGHT:
+                        player1.derecha=False
+                        if player1.izquierda:vx=-velocidad
+                        else:vx=0
+                    if event.key== pygame.K_UP:
+                        player1.arriba=False
+                        if player1.abajo:vy=velocidad
+                        else:vy=-0
+                    if event.key == pygame.K_DOWN:
+                        player1.abajo=False
+                        if player1.arriba:
+                            vy=-velocidad
+                            
+                        else:vy=0
+                       
+            if player1.correr ==True:
+                objBarra.restarBarra()
+                if objBarra.valorx <= 10:
+                    cansado = True    
+            if player1.correr ==False:
+                objBarra.sumarBarra()
+                if objBarra.valorx > 10:
+                    cansado = False 
+    #Boton Izquierda
+            if player1.izquierda == True:
+                if player1.correr == True:
+                    if cansado == True:
+                        velocidad = 7
+                    if cansado == False:
+                        velocidad = 15
+                else: velocidad = 7
+                vx = - velocidad
+                
+    #Boton derecha
+            elif player1.derecha == True:
+                if player1.correr == True:
+                    if cansado == True:
+                        velocidad = 7
+                    if cansado == False:
+                        velocidad = 15
+                else: velocidad = 7
+                vx = + velocidad
+                
+    #BOTON ARRIBA
+            if player1.arriba == True:
+                if player1.correr == True:
+                    if cansado == True:
+                        velocidad = 7
+                    if cansado == False:
+                        velocidad = 15
+                else: velocidad = 7
+                vy = - velocidad
+                
+    #BOTON ABAJO
+            elif player1.abajo == True:
+                if player1.correr == True:
+                    if cansado == True:
+                        velocidad = 7
+                    if cansado == False:
+                        velocidad = 15
+                else: velocidad = 7
+                
+                vy = +velocidad
+                
+            reloj1.tick(30)# 25 fps
             
-#Boton derecha
-        elif player1.derecha == True:
-            if player1.correr == True:
-                if cansado == True:
-                    velocidad = 7
-                if cansado == False:
-                    velocidad = 15
-            else: velocidad = 7
-            vx = + velocidad
+            #auxiliar de la animacion, retrasa el cambio de imagen
+            tiempoProbabilidad += 1  
+            if tiempoProbabilidad>50:
+                tiempoProbabilidad=0
+                
             
-#BOTON ARRIBA
-        if player1.arriba == True:
-            if player1.correr == True:
-                if cansado == True:
-                    velocidad = 7
-                if cansado == False:
-                    velocidad = 15
-            else: velocidad = 7
-            vy = - velocidad
-            
-#BOTON ABAJO
-        elif player1.abajo == True:
-            if player1.correr == True:
-                if cansado == True:
-                    velocidad = 7
-                if cansado == False:
-                    velocidad = 15
-            else: velocidad = 7
-            
-            vy = +velocidad
-            
-        reloj1.tick(30)# 25 fps
+            # actualizar jugador
+            # si es momento de sacar un conjeo llamo a probConejo
+            if tiempoProbabilidad == 5: # este tiempo probabilidad es 
+                
+                probConejo()           # para q no salgan conejos a patadas
+                
+            if len(listaConejo) > 0:    #aca recorre la lista de conejos
+                for conejo in listaConejo: #por cada conejo invoca a sale.conejo
+                    conejo.saleConejo(t)
+                    if conejo.bajo == False: #aca si el atributo .bajo es False es xq
+                        listaConejo.remove(conejo)#el conejo bajo y hay q eliminar el
+                        
+
+
+                        
+             
+
+            #actualizar pantalla
+            yuyos.dibujarYuyos(ventana)
+            player1.update(pantalla,vx,vy,t)
+            pygame.display.update()
+            score.dibujarScore(ventana)     
         
-        #auxiliar de la animacion, retrasa el cambio de imagen
-        tiempoProbabilidad += 1  
-        if tiempoProbabilidad>50:
-            tiempoProbabilidad=0
-            
-        
-        # actualizar jugador
-        # si es momento de sacar un conjeo llamo a probConejo
-        if tiempoProbabilidad == 5: # este tiempo probabilidad es 
-            
-            probConejo()           # para q no salgan conejos a patadas
-            
-        if len(listaConejo) > 0:    #aca recorre la lista de conejos
-            for conejo in listaConejo: #por cada conejo invoca a sale.conejo
-                conejo.saleConejo(t)
-                if conejo.bajo == False: #aca si el atributo .bajo es False es xq
-                    listaConejo.remove(conejo)#el conejo bajo y hay q eliminar el
-                    
-
-
-                    
-         
-
-        #actualizar pantalla
-        yuyos.dibujarYuyos(ventana)
-        player1.update(pantalla,vx,vy,t)
-        pygame.display.update()
-        score.dibujarScore(ventana)     
-    pygame.quit()
-cansado=False
+    cansado=False
 main()
